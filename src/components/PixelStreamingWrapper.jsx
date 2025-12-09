@@ -29,7 +29,7 @@ export const PixelStreamingWrapper = ({ initialSettings, onStreamInstance }) => 
             return () => {
                 try {
                     streaming.disconnect();
-                } catch(e) {
+                } catch (e) {
                     // This can sometimes throw an error if the connection is already closed.
                 }
             };
@@ -43,6 +43,7 @@ export const PixelStreamingWrapper = ({ initialSettings, onStreamInstance }) => 
                 height: '100%',
                 position: 'relative'
             }}
+            onContextMenu={(e) => e.preventDefault()}
         >
             <div
                 style={{ width: '100%', height: '100%' }}

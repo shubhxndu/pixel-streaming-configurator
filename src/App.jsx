@@ -6,7 +6,7 @@ import ControlPanel from './components/ControlPanel';
 const App = () => {
     const [logs, setLogs] = useState([]);
     const streamRef = useRef(null);
-    
+
     // Configuration State
     const [selectedColor, setSelectedColor] = useState("Red");
     const [selectedRim, setSelectedRim] = useState("Stock");
@@ -71,7 +71,7 @@ const App = () => {
     };
 
     const handleRestartLevel = () => {
-        if(!streamRef.current) return;
+        if (!streamRef.current) return;
         const descriptor = { LoadLevel: "/Game/Maps/MainMap" };
         streamRef.current.emitUIInteraction(descriptor);
     }
@@ -85,6 +85,7 @@ const App = () => {
                         AutoPlayVideo: true,
                         ss: 'ws://127.0.0.1:80',
                         StartVideoMuted: true,
+                        HoveringMouse: true,
                     }}
                     onStreamInstance={onStreamInstance}
                 />

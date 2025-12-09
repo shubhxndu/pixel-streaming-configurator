@@ -1,5 +1,5 @@
 import React from 'react';
-import { Terminal, Zap, Settings, Monitor, Send, RotateCcw, Palette } from 'lucide-react';
+import { Terminal, Zap, Settings, Monitor, Send, RotateCcw, Palette, LogOut, ChevronUp, ChevronDown } from 'lucide-react';
 
 const ControlPanel = ({
     logs,
@@ -14,6 +14,18 @@ const ControlPanel = ({
     setCustomCommand,
     streamRef
 }) => {
+    const [showLogs, setShowLogs] = React.useState(false);
+
+    const handleExit = () => {
+        if (confirm("Are you sure you want to exit?")) {
+            if (window.chrome && window.chrome.webview) {
+                window.chrome.webview.postMessage("exit");
+            } else {
+                alert("Not running in WebView2 context.");
+            }
+        }
+    };
+
     return (
         <div className="w-[15%] h-full flex flex-col bg-neutral-900 shadow-2xl z-10">
             {/* Header */}
@@ -39,8 +51,8 @@ const ControlPanel = ({
                                 key={color}
                                 onClick={() => handleColorChange(color)}
                                 className={`p-3 rounded-lg border text-sm transition-all ${selectedColor === color
-                                        ? 'bg-blue-600 border-blue-500 text-white'
-                                        : 'bg-neutral-800 border-neutral-700 hover:bg-neutral-750 text-neutral-300'
+                                    ? 'bg-blue-600 border-blue-500 text-white'
+                                    : 'bg-neutral-800 border-neutral-700 hover:bg-neutral-750 text-neutral-300'
                                     }`}
                             >
                                 {color}
@@ -59,8 +71,8 @@ const ControlPanel = ({
                                 key={rim}
                                 onClick={() => handleRimChange(rim)}
                                 className={`w-full p-3 flex justify-between items-center rounded-lg border text-sm transition-all ${selectedRim === rim
-                                        ? 'bg-emerald-600/20 border-emerald-500 text-emerald-400'
-                                        : 'bg-neutral-800 border-neutral-700 hover:bg-neutral-750 text-neutral-300'
+                                    ? 'bg-emerald-600/20 border-emerald-500 text-emerald-400'
+                                    : 'bg-neutral-800 border-neutral-700 hover:bg-neutral-750 text-neutral-300'
                                     }`}
                             >
                                 <span>{rim}</span>
@@ -115,22 +127,45 @@ const ControlPanel = ({
                         </button>
                     </form>
                 </section>
+
+                {/* Section 4: System */}
+                <section>
+                    <h3 className="text-sm font-semibold text-neutral-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                        <Settings size={16} /> System
+                    </h3>
+                    <button
+                        onClick={handleExit}
+                        className="w-full px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded text-sm font-bold flex items-center justify-center gap-2 transition-colors"
+                    >
+                        <LogOut size={16} />
+                        Exit Application
+                    </button>
+                </section>
             </div>
 
             {/* Debug Logs Footer */}
-            <div className="h-48 bg-black/80 border-t border-neutral-800 p-4 font-mono text-xs overflow-y-auto">
-                <div className="flex items-center gap-2 text-neutral-500 mb-2 sticky top-0 bg-black w-full">
-                    <Terminal size={12} />
-                    <span>Event Log (Outgoing)</span>
+            <div className={`transition-all duration-300 ease-in-out bg-black/80 border-t border-neutral-800 font-mono text-xs flex flex-col ${showLogs ? 'h-48' : 'h-10'}`}>
+                <div
+                    className="flex items-center justify-between p-3 cursor-pointer bg-black w-full hover:bg-neutral-900 transition-colors"
+                    onClick={() => setShowLogs(!showLogs)}
+                >
+                    <div className="flex items-center gap-2 text-neutral-500">
+                        <Terminal size={12} />
+                        <span>Event Log (Outgoing)</span>
+                    </div>
+                    {showLogs ? <ChevronDown size={14} className="text-neutral-500" /> : <ChevronUp size={14} className="text-neutral-500" />}
                 </div>
-                <div className="space-y-1">
-                    {logs.length === 0 && <span className="text-neutral-700 italic">Waiting for interactions...</span>}
-                    {logs.map((log, i) => (
-                        <div key={i} className="break-all border-l-2 border-blue-900 pl-2 py-1">
-                            {log}
-                        </div>
-                    ))}
-                </div>
+
+                {showLogs && (
+                    <div className="overflow-y-auto p-4 pt-0 space-y-1">
+                        {logs.length === 0 && <span className="text-neutral-700 italic">Waiting for interactions...</span>}
+                        {logs.map((log, i) => (
+                            <div key={i} className="break-all border-l-2 border-blue-900 pl-2 py-1">
+                                {log}
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
         </div>
     );

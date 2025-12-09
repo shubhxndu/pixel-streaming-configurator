@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>POC Kiosk</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: white;
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .card {
+            background: #333;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        h1 {
+            color: #61dafb;
+        }
+
+        button {
+            background-color: #61dafb;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            color: #1a1a1a;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #21a1f1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <h1>Hello from Embedded Server!</h1>
+        <p>This is hosted locally on <strong>localhost:5000</strong></p>
+        <p>Rendered inside <strong>WPF + WebView2</strong></p>
+        <button onclick="alert('JavaScript is working!')">Test Interaction</button>
+        <button onclick="exitApp()" style="background-color: #ff4d4d; margin-left: 10px;">Exit Application</button>
+    </div>
+
+    <script>
+        function exitApp() {
+            if (confirm("Are you sure you want to exit?")) {
+                if (window.chrome && window.chrome.webview) {
+                    window.chrome.webview.postMessage("exit");
+                } else {
+                    alert("Not running in WebView2 context.");
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
